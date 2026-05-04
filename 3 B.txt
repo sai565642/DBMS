@@ -1,0 +1,97 @@
+NAME- SAINATH RAJU SHINDE
+BATCH-A3
+PR-NAMESQL Queries for Access Control.
+Access Control (DCL) Use GRANT, REVOKE and ROLE commands to manage user
+acces.
+(The application may vary as per the subject teachers requirement.)
+PR NO- 03-PART B
+DIV-A
+ROLL NO-23184
+PRN NO-72433606K
+BRANCH AND YEAR -SE-COMPUTER SCIENCE
+****************************************************************************************************************************************************
+Enter password: ****
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 9
+Server version: 8.0.45 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2026, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| assignment2        |
+| assignment3        |
+| assignmentno3      |
+| assignmentno3partb |
+| assno3part3        |
+| college_db         |
+| college_db1        |
+| information_schema |
+| mysql              |
+| performance_schema |
+| sakila             |
+| sys                |
+| world              |
++--------------------+
+13 rows in set (0.00 sec)
+
+mysql> use college_db;
+Database changed
+mysql> CREATE TABLE student (
+     roll_no INT PRIMARY KEY,
+     name VARCHAR(50),
+     marks INT
+     );
+
+mysql> create table stud(
+     roll_no INT PRIMARY KEY,
+     name VARCHAR(50),
+     marks INT
+     );
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> create user 'userx' identified by 'root';
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> grant select on stud to userx;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> grant select,insert,update on stud to userx;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> revoke select on stud from userx;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> revoke insert  on stud from userx;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> select user,host from college_db.userx;
+mysql> show grants for 'userx';
++----------------------------------------------------+
+| Grants for userx@%                                 |
++----------------------------------------------------+
+| GRANT USAGE ON *.* TO `userx`@`%`                  |
+| GRANT UPDATE ON `college_db`.`stud` TO `userx`@`%` |
++----------------------------------------------------+
+2 rows in set (0.00 sec)
+
+mysql> revoke update on stud from userx;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> show grants for 'userx';
++-----------------------------------+
+| Grants for userx@%                |
++-----------------------------------+
+| GRANT USAGE ON *.* TO `userx`@`%` |
++-----------------------------------+
+1 row in set (0.00 sec)
+
+mysql>

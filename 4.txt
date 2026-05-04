@@ -1,0 +1,147 @@
+NAME- SAINATH RAJU SHINDE
+BATCH-A3
+PR-NAME Aggregate Functions and Grouping
+Use aggregate functions along with GROUP BY and HAVING clauses to retrieve
+summarized data from the database.
+(The application may vary as per the subject teachers requirement.)
+PR NO- 04
+DIV-A
+ROLL NO-23184
+PRN NO-72433606K
+BRANCH AND YEAR -SE-COMPUTER SCIENCE
+****************************************************************************************************************************************************
+Enter password: ****
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 20
+Server version: 8.0.45 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2026, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| assignment2        |
+| assignment3        |
+| assignmentno3      |
+| assignmentno3partb |
+| assignmentpartc    |
+| assno3part3        |
+| college_db         |
+| college_db1        |
+| information_schema |
+| mysql              |
+| performance_schema |
+| sakila             |
+| sys                |
+| world              |
++--------------------+
+14 rows in set (0.01 sec)
+
+mysql> create database AssignmentNo04;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> use AssignmentNo04;
+Database changed
+mysql> CREATE TABLE Student_Result (
+     Student_ID INT,
+     Student_Name VARCHAR(50),
+     Subject VARCHAR(30),
+     Marks INT,
+     Department VARCHAR(30)
+     );
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> INSERT INTO Student_Result VALUES (1, 'Amit', 'DBMS', 78, 'Computer'), (2, 'Neha', 'DBMS', 85, 'Computer'), (3, 'Rahul', 'OS', 72, 'Computer'), (4, 'Sneha', 'OS', 88, 'IT'), (5, 'Pooja', 'DBMS', 91, 'IT'), (6, 'Ravi', 'OS', 65, 'IT');
+Query OK, 6 rows affected (0.01 sec)
+Records: 6  Duplicates: 0  Warnings: 0
+
+mysql> SELECT Department, COUNT(Student_ID) AS Total_Students
+     FROM Student_Result
+     GROUP BY Department;
++------------+----------------+
+| Department | Total_Students |
++------------+----------------+
+| Computer   |              3 |
+| IT         |              3 |
++------------+----------------+
+2 rows in set (0.01 sec)
+
+mysql> SELECT Subject, AVG(Marks) AS Avg_Marks
+     FROM Student_Result
+     GROUP BY Subject;
++---------+-----------+
+| Subject | Avg_Marks |
++---------+-----------+
+| DBMS    |   84.6667 |
+| OS      |   75.0000 |
++---------+-----------+
+2 rows in set (0.00 sec)
+
+mysql> SELECT Department,
+     MAX(Marks) AS Highest_Marks,
+     MIN(Marks) AS Lowest_Marks
+     FROM Student_Result
+     GROUP BY Department;
++------------+---------------+--------------+
+| Department | Highest_Marks | Lowest_Marks |
++------------+---------------+--------------+
+| Computer   |            85 |           72 |
+| IT         |            91 |           65 |
++------------+---------------+--------------+
+2 rows in set (0.00 sec)
+
+mysql> SELECT Department, SUM(Marks) AS Total_Marks
+     FROM Student_Result
+     GROUP BY Department;
++------------+-------------+
+| Department | Total_Marks |
++------------+-------------+
+| Computer   |         235 |
+| IT         |         244 |
++------------+-------------+
+2 rows in set (0.00 sec)
+
+mysql> SELECT Department, AVG(Marks) AS Avg_Marks
+     FROM Student_Result
+     GROUP BY Department
+     HAVING AVG(Marks) > 80;
++------------+-----------+
+| Department | Avg_Marks |
++------------+-----------+
+| IT         |   81.3333 |
++------------+-----------+
+1 row in set (0.00 sec)
+
+mysql> SELECT Subject, COUNT(Student_ID) AS Student_Count
+     FROM Student_Result
+     GROUP BY Subject
+     HAVING COUNT(Student_ID) > 2;
++---------+---------------+
+| Subject | Student_Count |
++---------+---------------+
+| DBMS    |             3 |
+| OS      |             3 |
++---------+---------------+
+2 rows in set (0.00 sec)
+
+mysql> SELECT Department, AVG(Marks) AS Avg_Marks
+     FROM Student_Result
+     WHERE Marks >= 70
+     GROUP BY Department
+     HAVING AVG(Marks) > 75;
++------------+-----------+
+| Department | Avg_Marks |
++------------+-----------+
+| Computer   |   78.3333 |
+| IT         |   89.5000 |
++------------+-----------+
+2 rows in set (0.00 sec)
+
+mysql>

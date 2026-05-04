@@ -1,0 +1,124 @@
+NAME-SAINATH RAJU SHINDE
+PR NO- 08
+BATCH-A3
+DIV-A
+ROLL NO-23184
+PRN NO-72433606K
+BRANCH AND YEAR -SE-COMPUTER SCIENCE
+***************************************************************************************************************************
+Enter password: ****
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 23
+Server version: 8.0.45 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2026, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| assignment2        |
+| assignment3        |
+| assignmentno04     |
+| assignmentno05     |
+| assignmentno06     |
+| assignmentno3      |
+| assignmentno3partb |
+| assignmentpartc    |
+| assno3part3        |
+| college_db         |
+| college_db1        |
+| information_schema |
+| mysql              |
+| performance_schema |
+| sakila             |
+| sys                |
+| world              |
++--------------------+
+17 rows in set (0.01 sec)
+
+mysql> CREATE DATABASE bank_db;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> USE bank_db;
+Database changed
+
+mysql> CREATE TABLE accounts (acc_no INT PRIMARY KEY,name VARCHAR(50),balance DECIMAL(10,2));
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> INSERT INTO accounts VALUES (1, 'Amit', 5000);
+INSERT INTO accounts VALUES (2, 'Ravi', 3000);
+Query OK, 1 row affected (0.01 sec)
+
+Query OK, 1 row affected (0.01 sec)
+
+mysql> SELECT * FROM accounts;
++--------+------+---------+
+| acc_no | name | balance |
++--------+------+---------+
+|      1 | Amit | 5000.00 |
+|      2 | Ravi | 3000.00 |
++--------+------+---------+
+2 rows in set (0.00 sec)
+
+mysql> DELIMITER //
+mysql> CREATE TRIGGER check_balance
+     BEFORE UPDATE ON accounts
+     FOR EACH ROW
+     BEGIN
+      IF NEW.balance < 0 THEN
+      SIGNAL SQLSTATE '45000'
+      SET MESSAGE_TEXT = 'Insufficient Balance!';
+     END IF;
+     END;
+     //
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> DELIMITER ;
+mysql> UPDATE accounts
+     SET balance = balance - 1000
+     WHERE acc_no = 1;
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> UPDATE accounts
+     SET balance = balance - 6000
+     WHERE acc_no = 1;
+ERROR 1644 (45000): Insufficient Balance!
+mysql> CREATE TABLE account_log (log_id INT AUTO_INCREMENT PRIMARY KEY,acc_no INT,old_balance DECIMAL(10,2),
+new_balance DECIMAL(10,2),action_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP);
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> DELIMITER //
+mysql> CREATE TRIGGER log_update
+     AFTER UPDATE ON accounts
+     FOR EACH ROW
+     BEGIN
+      INSERT INTO account_log(acc_no, old_balance, new_balance)
+      VALUES (OLD.acc_no, OLD.balance, NEW.balance);
+     END;
+     //
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> DELIMITER ;
+mysql> UPDATE accounts
+     SET balance = balance + 500
+     WHERE acc_no = 2;
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> SELECT * FROM account_log;
++--------+--------+-------------+-------------+---------------------+
+| log_id | acc_no | old_balance | new_balance | action_time         |
++--------+--------+-------------+-------------+---------------------+
+|      1 |      2 |     3000.00 |     3500.00 | 2026-04-06 23:37:02 |
++--------+--------+-------------+-------------+---------------------+
+1 row in set (0.00 sec)
+
+mysql>

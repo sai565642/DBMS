@@ -1,0 +1,241 @@
+NAME- SAINATH RAJU SHINDE
+BATCH-A3
+PR-NAME SQL Queries for Data Manipulation
+Data Manipulation Language(DML) Use SQL statement to INSERT, UPDATE, and DELETE
+records. Apply arithmetic, logical, set operators, pattern matching and string functions.
+(The application may vary as per the subject teachers requirement.)
+PR NO- 03-PART A
+DIV-A
+ROLL NO-23184
+PRN NO-72433606K
+BRANCH AND YEAR -SE-COMPUTER SCIENCE
+****************************************************************************************************************************************************
+Enter password: ****
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 9
+Server version: 8.0.45 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2026, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| assignment2        |
+| assignment3        |
+| information_schema |
+| mysql              |
+| performance_schema |
+| sakila             |
+| sys                |
+| world              |
++--------------------+
+8 rows in set (0.00 sec)
+
+mysql> create database ASSIGNMENTNO3;
+Query OK, 1 row affected (0.01 sec)
+
+
+mysql> CREATE TABLE Book (
+     Book_ID INT PRIMARY KEY,
+     Book_Name VARCHAR(50),
+     Author VARCHAR(50),
+     Price INT,
+     Category VARCHAR(30)
+     );
+
+mysql> use ASSIGNMENTNO3;
+Database changed
+
+mysql> CREATE TABLE Book (
+     Book_ID INT PRIMARY KEY,
+     Book_Name VARCHAR(50),
+     Author VARCHAR(50),
+     Price INT,
+     Category VARCHAR(30)
+     );
+
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> CREATE TABLE Issued_Book (
+     Book_Name VARCHAR(50)
+     );
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> INSERT INTO Book VALUES
+     (1, 'Database Systems', 'Navathe', 500, 'Education'),
+     (2, 'Operating System', 'Silberschatz', 650, 'Education'),
+     (3, 'C Programming', 'Dennis Ritchie', 300, 'Programming'),
+     (4, 'Python Basics', 'Guido', 400, 'Programming');
+Query OK, 4 rows affected (0.01 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql> show tables;
++-------------------------+
+| Tables_in_assignmentno3 |
++-------------------------+
+| book                    |
+| issued_book             |
++-------------------------+
+2 rows in set (0.01 sec)
+
+mysql> select * from Book;
++---------+------------------+----------------+-------+-------------+
+| Book_ID | Book_Name        | Author         | Price | Category    |
++---------+------------------+----------------+-------+-------------+
+|       1 | Database Systems | Navathe        |   500 | Education   |
+|       2 | Operating System | Silberschatz   |   650 | Education   |
+|       3 | C Programming    | Dennis Ritchie |   300 | Programming |
+|       4 | Python Basics    | Guido          |   400 | Programming |
++---------+------------------+----------------+-------+-------------+
+4 rows in set (0.00 sec)
+
+mysql> UPDATE Book
+     SET Price = Price + (Price * 0.10)
+     WHERE Category = 'Programming';
+Query OK, 2 rows affected (0.01 sec)
+Rows matched: 2  Changed: 2  Warnings: 0
+
+mysql> select * from Book;
++---------+------------------+----------------+-------+-------------+
+| Book_ID | Book_Name        | Author         | Price | Category    |
++---------+------------------+----------------+-------+-------------+
+|       1 | Database Systems | Navathe        |   500 | Education   |
+|       2 | Operating System | Silberschatz   |   650 | Education   |
+|       3 | C Programming    | Dennis Ritchie |   330 | Programming |
+|       4 | Python Basics    | Guido          |   440 | Programming |
++---------+------------------+----------------+-------+-------------+
+4 rows in set (0.00 sec)
+
+mysql> DELETE FROM Book
+     WHERE Price < 350;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from Book;
++---------+------------------+--------------+-------+-------------+
+| Book_ID | Book_Name        | Author       | Price | Category    |
++---------+------------------+--------------+-------+-------------+
+|       1 | Database Systems | Navathe      |   500 | Education   |
+|       2 | Operating System | Silberschatz |   650 | Education   |
+|       4 | Python Basics    | Guido        |   440 | Programming |
++---------+------------------+--------------+-------+-------------+
+3 rows in set (0.00 sec)
+
+mysql> SELECT Book_Name, Price, Price + 50 AS New_Price
+     FROM Book;
++------------------+-------+-----------+
+| Book_Name        | Price | New_Price |
++------------------+-------+-----------+
+| Database Systems |   500 |       550 |
+| Operating System |   650 |       700 |
+| Python Basics    |   440 |       490 |
++------------------+-------+-----------+
+3 rows in set (0.00 sec)
+
+mysql> SELECT * FROM Book
+     WHERE Category = 'Education' AND Price > 500;
++---------+------------------+--------------+-------+-----------+
+| Book_ID | Book_Name        | Author       | Price | Category  |
++---------+------------------+--------------+-------+-----------+
+|       2 | Operating System | Silberschatz |   650 | Education |
++---------+------------------+--------------+-------+-----------+
+1 row in set (0.00 sec)
+
+mysql> SELECT * FROM Book
+     WHERE Book_Name LIKE 'D%';
++---------+------------------+---------+-------+-----------+
+| Book_ID | Book_Name        | Author  | Price | Category  |
++---------+------------------+---------+-------+-----------+
+|       1 | Database Systems | Navathe |   500 | Education |
++---------+------------------+---------+-------+-----------+
+1 row in set (0.00 sec)
+
+mysql> SELECT UPPER(Book_Name) AS Book_Upper,
+     LOWER(Author) AS Author_Lower
+     FROM Book;
++------------------+--------------+
+| Book_Upper       | Author_Lower |
++------------------+--------------+
+| DATABASE SYSTEMS | navathe      |
+| OPERATING SYSTEM | silberschatz |
+| PYTHON BASICS    | guido        |
++------------------+--------------+
+3 rows in set (0.00 sec)
+
+mysql> SELECT Book_Name, LENGTH(Book_Name) AS Name_Length
+     FROM Book;
++------------------+-------------+
+| Book_Name        | Name_Length |
++------------------+-------------+
+| Database Systems |          16 |
+| Operating System |          16 |
+| Python Basics    |          13 |
++------------------+-------------+
+3 rows in set (0.00 sec)
+
+mysql> SELECT SUBSTRING(Book_Name, 1, 4) AS Short_Name
+     FROM Book;
++------------+
+| Short_Name |
++------------+
+| Data       |
+| Oper       |
+| Pyth       |
++------------+
+3 rows in set (0.00 sec)
+
+mysql> INSERT INTO Issued_Book VALUES
+     ('Database Systems'),
+     ('Python Basics');
+Query OK, 2 rows affected (0.01 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+mysql> select * from Issued_Book;
++------------------+
+| Book_Name        |
++------------------+
+| Database Systems |
+| Python Basics    |
++------------------+
+2 rows in set (0.00 sec)
+
+mysql> SELECT Book_Name FROM Book
+     UNION
+     SELECT Book_Name FROM Issued_Book;
++------------------+
+| Book_Name        |
++------------------+
+| Database Systems |
+| Operating System |
+| Python Basics    |
++------------------+
+3 rows in set (0.00 sec)
+
+mysql> SELECT Book_Name FROM Book
+     INTERSECT
+     SELECT Book_Name FROM Issued_Book;
++------------------+
+| Book_Name        |
++------------------+
+| Database Systems |
+| Python Basics    |
++------------------+
+2 rows in set (0.00 sec)
+
+mysql> SELECT Book_Name FROM Book
+     EXCEPT
+     SELECT Book_Name FROM Issued_Book;
++------------------+
+| Book_Name        |
++------------------+
+| Operating System |
++------------------+
+1 row in set (0.00 sec)
+
+mysql>

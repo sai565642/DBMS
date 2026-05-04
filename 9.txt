@@ -1,0 +1,124 @@
+Assignment No: 9 – Articles Collection
+Create DB & Collection
+use ArticleDB
+db.createCollection("Articles")
+
+1. Insert multiple documents
+db.Articles.insertMany([
+{
+ Title: "AI Revolution",
+ Content: "About AI",
+ Author: "Sharma",
+ Author_age: 45,
+ Dop: ISODate("2023-01-10"),
+ Category: "IT",
+ Comments: [
+   { Name: "Amit", Remarks: "Good" }
+ ]
+},
+{
+ Title: "Politics Today",
+ Content: "About Politics",
+ Author: "Verma",
+ Author_age: 50,
+ Dop: ISODate("2023-02-15"),
+ Category: "Politics",
+ Comments: [
+   { Name: "Rahul", Remarks: "Informative" }
+ ]
+}
+])
+
+2. Display the first document in collection
+db.Articles.findOne()
+
+3.  Display first document of Author = "Sharma"
+db.Articles.findOne({ Author: "Sharma" })
+
+4. Display selected fields using projection (Title, Author only)
+db.Articles.find({}, { _id: 0, Title: 1, Author: 1 })
+
+5. Modify comment made by a specific person on a specific article
+db.Articles.updateOne(
+ { Title: "AI Revolution", "Comments.Name": "Amit" },
+ { $set: { "Comments.$.Remarks": "Excellent" } }
+)
+
+6. Insert document using save() method (with and without ObjectId)
+db.Articles.save({
+ Title: "Science News",
+ Author: "Kumar"
+})
+
+db.Articles.save({
+_id: 11,
+Title: "AI Basics",
+Author: "Sharma",
+Author_age: 45,
+Category: "IT"
+})
+
+7. Update collection using save() method
+db.Articles.save({
+_id: 11,
+Title: "AI Advanced",
+Author: "Sharma",
+Author_age: 45,
+Category: "Information Technology"
+})
+
+8. Add one more comment to a specific article
+db.Articles.updateOne(
+ { Title: "AI Revolution" },
+ { $push: { Comments: { Name: "Ravi", Remarks: "Nice article" } } }
+)
+
+9. Update Category from "IT" → "Information Technology
+db.Articles.updateMany(
+ { Category: "IT" },
+ { $set: { Category: "Information Technology" } }
+)
+
+10. Update Dop of first Sharma article
+db.Articles.updateOne(
+ { Author: "Sharma" },
+ { $set: { Dop: ISODate("2024-01-01") } }
+)
+
+11. Replace entire document if matched, else insert (upsert concept)
+db.Articles.updateOne(
+ { Title: "New Article" },
+ { $set: { Author: "Mehta", Category: "IT" } },
+ { upsert: true }
+)
+
+12. Find authors with age > 40
+db.Articles.find({ Author_age: { $gt: 40 } })
+
+13. Find authors with age between 40–80
+db.Articles.find({
+ Author_age: { $gte: 40, $lte: 80 }
+})
+
+14. Find all articles that are either written by the author "Sharma" or belong to the "IT" category
+db.Articles.find({
+ $or: [
+   { Author: "Sharma" },    { Category: "IT" } ] })
+
+15. Find all articles that are written by the author "Sharma" and belong to the "IT" category.
+db.Articles.find({
+ Author: "Sharma",
+ Category: "IT"
+})
+
+16. Find articles where category is NOT equal to "Politics" 
+db.Articles.find({
+ Category: { $ne: "Politics" }
+})
+
+17. Delete first article by specific author
+db.Articles.deleteOne({ Author: "Sharma" })
+
+18. Delete all articles in "Politics" category
+db.Articles.deleteMany({ Category: "Politics" })
+

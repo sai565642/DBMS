@@ -1,0 +1,83 @@
+Practical/Assignment No-07
+Practical/Assignment Name-Stored Procedures or Function with Cursors
+Create and execute stored procedures / OR- function using cursors.
+Student Name-SAINATH RAJU SHINDE
+Roll No-23184
+PRN NO-72433606K
+Division-A
+Batch -A3
+*************************************************************************
+**************************************************************
+Enter password: ****
+Welcome to the MySQL monitor. Commands end with ; or \g.
+Your MySQL connection id is 15
+Server version: 8.0.45 MySQL Community Server - GPL
+Copyright (c) 2000, 2026, Oracle and/or its affiliates.
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+Type 'help;' or '\h' for help. Type '\c' to clear the current input
+statement.
+mysql> show databases;
++----------------------+
+| Database |
++----------------------+
+| |
+| information_schema |
+| mysql |
+| performance_schema |
+| sys |
++----------------------+
+5 rows in set (0.04 sec)
+mysql> create database assignmentno7cursor1;
+Query OK, 0 rows affected (0.01 sec)
+mysql> use assignmentno7cursor1;
+Database changed
+mysql> CREATE TABLE student (id INT PRIMARY KEY,name VARCHAR(50),marks
+INT);
+Query OK, 0 rows affected (0.04 sec)
+mysql> INSERT INTO student VALUES(1, 'Amit', 75),(2, 'Neha', 85),(3,
+'Rahul', 65),(4, 'Sneha', 90),(5, 'Karan', 80);
+Query OK, 5 rows affected (0.01 sec)
+Records: 5 Duplicates: 0 Warnings: 0
+mysql> SELECT * FROM student;
++----+-------+-------+
+| id | name | marks |
++----+-------+-------+
+| 1 | Amit | 75 |
+| 2 | Neha | 85 |
+| 3 | Rahul | 65 |
+| 4 | Sneha | 90 |
+| 5 | Karan | 80 |
++----+-------+-------+
+5 rows in set (0.00 sec)
+mysql> DELIMITER //
+mysql> CREATE PROCEDURE total_marks_proc()
+BEGIN
+DECLARE done INT DEFAULT 0;
+DECLARE m INT;
+DECLARE total INT DEFAULT 0;
+DECLARE cur CURSOR FOR
+SELECT marks FROM student;
+DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+OPEN cur;
+read_loop: LOOP
+FETCH cur INTO m;
+IF done = 1 THEN
+LEAVE read_loop;
+END IF;
+SET total = total + m;
+END LOOP;
+CLOSE cur;
+SELECT total AS Total_Marks;
+END //
+Query OK, 0 rows affected (0.02 sec)
+mysql> DELIMITER ;
+mysql> CALL total_marks_proc();
++-------------+
+| Total_Marks |
++-------------+
+| 395 |
++-------------+
+1 row in set (0.02 sec)
+Query OK, 0 rows affected (0.02 sec)

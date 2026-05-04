@@ -1,0 +1,121 @@
+Assignment No: 10
+Title:
+Aggregation and Indexing in MongoDB: Design and execute MongoDB queries using aggregation and indexing techniques with suitable examples.
+
+Create the orders collection
+db.orders.insertMany([
+{
+  "Order_id": 1,
+  "Cust_id": "A1",
+  "Cust_name": "Aryan",
+  "Phone_no": [9890151243, 8806048721],
+  "Email_id": "aryan@gmail.com",
+  "Item_name": "Laptop",
+  "DtOfOrder": ISODate("2017-06-12T00:00:00Z"),
+  "Qty": 2,
+  "Amt": 90000,
+  "Status": "D"
+},
+{
+  "Order_id": 2,
+  "Cust_id": "A2",
+  "Cust_name": "Carol",
+  "Phone_no": [9876543210],
+  "Item_name": "Mobile",
+  "DtOfOrder": ISODate("2017-02-12T00:00:00Z"),
+  "Qty": 1,
+  "Amt": 20000,
+  "Status": "P"
+},
+{
+  "Order_id": 3,
+  "Cust_id": "A3",
+  "Cust_name": "Sam",
+  "Phone_no": [9998887777, 9988776655],
+  "Item_name": "Tablet",
+  "DtOfOrder": ISODate("2017-02-12T00:00:00Z"),
+  "Qty": 3,
+  "Amt": 45000,
+  "Status": "D"
+}
+])
+
+i. Create a simple index on Cust_id and Item_name and try to make duplicate entry.
+db.orders.createIndex({ Cust_id: 1 })
+db.orders.createIndex({ Item_name: 1 })
+db.orders.insertOne({ "Order_id": 4, "Cust_id": "A1", "Cust_name": "Aryan", "Phone_no": [9890151243, 8806048721], "Email_id": "aryan@gmail.com", "Item_name": "Laptop", "DtOfOrder": ISODate("2017-06-12T00:00:00Z"), "Qty": 2, "Amt": 90000, "Status": "D" })
+
+db.orders.getIndexes()
+
+ii. Create a unique index on Order_id and try to make duplicate entry.
+db.orders.createIndex({ Order_id: 1 }, { unique: true })
+
+iii. Create a multikey index on Phone_no and find customers with 2 phone numbers
+db.orders.find({ Phone_no: { $size: 2 } }).explain()
+db.orders.find({ Phone_no: 9890151243 }).explain()
+db.orders.createIndex({ Phone_no: 1 })
+db.orders.find({ Phone_no: { $size: 2 } }).explain()     …………….NO difference
+db.orders.find({ Phone_no: 9890151243 }).explain()               …….Now difference
+
+
+
+iv. Create a sparse index on Email_id and show effect with .explain()
+db.orders.find({ Email_id: "aryan@gmail.com" }).explain("executionStats")
+db.orders.createIndex({ Email_id: 1 }, { sparse: true })
+db.orders.find({ Email_id: "aryan@gmail.com" }).explain("executionStats")
+
+v. Display all indexes and show size of indexes
+db.orders.getIndexes()
+db.orders.totalIndexSize()
+
+vi. Delete all indexes
+db.orders.dropIndexes()
+
+vii. Count total delivered and pending orders
+db.orders.find({ Status: "D" }).count()
+db.orders.find({ Status: "P" }).count()
+
+viii. Display all customer names with no repetition
+db.orders.distinct("Cust_name")
+
+ix. Sort documents based on amount
+db.orders.find().sort({ Amt: 1 }).pretty()
+
+x. Show number of orders placed by each customer
+db.orders.aggregate([ { $group: { _id: "$Cust_name", cnt_of_order : { $sum: 1 } } } ])
+
+xi. Display customer IDs and total pending order amount in descending order.
+db.orders.aggregate([
+  { $match: { Status: "P" } },
+  { $group: { _id: "$Cust_id", pend_amt: { $sum: "$Amt" } } },
+  { $sort: { pend_amt: -1 } }
+])
+
+xii. Display customer IDs in ascending order with total delivered order amount
+db.orders.aggregate([
+  { $match: { Status: "D" } },
+  { $group: { _id: "$Cust_id", tot_amt: { $sum: "$Amt" } } },
+  { $sort: { _id: 1 } }
+])
+
+xiii. Show top two selling items
+db.orders.aggregate([
+  { $group: { _id: "$Item_name", totqty: { $sum: "$Qty" } } },
+  { $sort: { totqty: -1 } },
+  { $limit: 2 }
+])
+
+xiv. Find date on which maximum orders received
+db.orders.aggregate([
+  { $group: { _id: "$DtOfOrder", cnt_of_order: { $sum: 1 } } },
+  { $sort: { cnt_of_order: -1 } },
+  { $limit: 1 }
+])
+
+xv. Find customer who placed maximum orders
+db.orders.aggregate([
+  { $group: { _id: "$Cust_name", cnt_orderid: { $sum: 1 } } },
+  { $sort: { cnt_orderid: -1 } },
+  { $limit: 1 }
+])
+

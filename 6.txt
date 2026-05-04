@@ -1,0 +1,210 @@
+NAME- SAINATH RAJU SHINDE
+BATCH-A3
+PR-NAME Subqueries - Write and execute subqueries to retrieve data from one table
+based on results from another.
+(The application may vary as per the subject teachers requirement.)
+PR NO- 06
+DIV-A
+ROLL NO-23184
+PRN NO-72433606K
+BRANCH AND YEAR -SE-COMPUTER SCIENCE
+****************************************************************************************************************************************************
+Enter password: ****
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 22
+Server version: 8.0.45 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2026, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| assignment2        |
+| assignment3        |
+| assignmentno04     |
+| assignmentno05     |
+| assignmentno3      |
+| assignmentno3partb |
+| assignmentpartc    |
+| assno3part3        |
+| college_db         |
+| college_db1        |
+| information_schema |
+| mysql              |
+| performance_schema |
+| sakila             |
+| sys                |
+| world              |
++--------------------+
+16 rows in set (0.00 sec)
+
+mysql> create database AssignmentNo06;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> use AssignmentNo06;
+Database changed
+mysql> CREATE TABLE Customer (
+     customer_id INT PRIMARY KEY,
+     customer_name VARCHAR(50),
+     city VARCHAR(30)
+     );
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> CREATE TABLE Product (
+     product_id INT PRIMARY KEY,
+     product_name VARCHAR(50),
+     price DECIMAL(10,2)
+     );
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> CREATE TABLE Orders (
+     order_id INT PRIMARY KEY,
+     customer_id INT,
+     product_id INT,
+     quantity INT,
+     FOREIGN KEY (customer_id) REFERENCES Customer(customer_id),
+     FOREIGN KEY (product_id) REFERENCES Product(product_id)
+     );
+Query OK, 0 rows affected (0.06 sec)
+
+mysql> INSERT INTO Customer VALUES
+     (1, 'Amit', 'Pune'),
+     (2, 'Neha', 'Mumbai'),
+     (3, 'Rahul', 'Nagpur');
+Query OK, 3 rows affected (0.01 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> INSERT INTO Product VALUES
+     (101, 'Laptop', 55000),
+     (102, 'Mobile', 20000),
+     (103, 'Headphones', 2500);
+Query OK, 3 rows affected (0.01 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> INSERT INTO Orders VALUES
+     (1001, 1, 101, 1),
+     (1002, 2, 102, 2),
+     (1003, 1, 103, 3);
+Query OK, 3 rows affected (0.01 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> SELECT customer_name
+     FROM Customer
+     WHERE customer_id IN (  SELECT
+     WHERE customer_id IN (
+     SELECT customer_id
+     FROM Orders
+     );
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your 
+MySQL server version for the right syntax to use near ' SELECT
+WHERE customer_id IN (
+SELECT customer_id
+FROM Orders
+)' at line 3
+mysql> SELECT customer_name
+     FROM Customer
+     WHERE customer_id IN (
+     SELECT customer_id
+     FROM Orders
+     );
++---------------+
+| customer_name |
++---------------+
+| Amit          |
+| Neha          |
++---------------+
+2 rows in set (0.00 sec)
+
+mysql> SELECT customer_name
+     FROM Customer
+     WHERE customer_id NOT IN (
+     SELECT customer_id
+     FROM Orders
+     );
++---------------+
+| customer_name |
++---------------+
+| Rahul         |
++---------------+
+1 row in set (0.00 sec)
+
+mysql> SELECT product_name, price
+     FROM Product
+     WHERE price = (
+     SELECT MAX(price)
+     FROM Product
+     );
++--------------+----------+
+| product_name | price    |
++--------------+----------+
+| Laptop       | 55000.00 |
++--------------+----------+
+1 row in set (0.00 sec)
+
+mysql> SELECT order_id,
+     (SELECT price FROM Product WHERE Product.product_id = Orders.product_id) * quantity
+     AS total_amount
+     FROM Orders;
++----------+--------------+
+| order_id | total_amount |
++----------+--------------+
+|     1001 |     55000.00 |
+|     1002 |     40000.00 |
+|     1003 |      7500.00 |
++----------+--------------+
+3 rows in set (0.00 sec)
+
+mysql> SELECT customer_id, total
+     FROM (
+     SELECT Orders.customer_id,
+     SUM(Product.price * Orders.quantity) AS total
+     FROM Orders
+     JOIN Product ON Orders.product_id = Product.product_id
+     GROUP BY Orders.customer_id
+     ) AS Purchase
+     WHERE total > 30000;
++-------------+----------+
+| customer_id | total    |
++-------------+----------+
+|           1 | 62500.00 |
+|           2 | 40000.00 |
++-------------+----------+
+2 rows in set (0.00 sec)
+
+mysql> SELECT product_name, price
+     FROM Product P
+     WHERE price > (
+     SELECT AVG(price)
+     FROM Product
+     WHERE Product.product_id = P.product_id OR 1=1
+     );
++--------------+----------+
+| product_name | price    |
++--------------+----------+
+| Laptop       | 55000.00 |
++--------------+----------+
+1 row in set (0.00 sec)
+
+mysql> SELECT customer_name
+     FROM Customer C
+     WHERE EXISTS (
+     SELECT 1
+     FROM Orders O
+     WHERE O.customer_id = C.customer_id
+     );
++---------------+
+| customer_name |
++---------------+
+| Amit          |
+| Neha          |
++---------------+
+2 rows in set (0.00 sec)
+
+mysql>
